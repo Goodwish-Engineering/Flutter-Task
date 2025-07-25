@@ -43,16 +43,17 @@ class DisplayScreen extends StatelessWidget {
           ),
           ElevatedButton.icon(
             onPressed: () {
+              Provider.of<StudentProvider>(
+                context,
+                listen: false,
+              ).clearStudent();
+
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute<Widget>(
                   builder: (BuildContext context) => const RegistrationScreen(),
                 ),
                 (Route<dynamic> route) => false,
               );
-              Provider.of<StudentProvider>(
-                context,
-                listen: false,
-              ).clearStuent();
             },
             label: const Text('Yes!'),
             icon: const Icon(Icons.check),
@@ -90,7 +91,7 @@ class DisplayScreen extends StatelessWidget {
                   const SizedBox(height: 20),
                   CircleAvatar(
                     radius: 80,
-                    backgroundImage: FileImage(File(student!.profilePath)),
+                    backgroundImage: FileImage(File(student.profilePath)),
                   ),
                   const SizedBox(height: 20),
                   _buildInfoRow('Full Name', student.fullName),

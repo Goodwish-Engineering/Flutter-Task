@@ -38,6 +38,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   bool _isPickingImage = false;
 
+  bool _isInitialized = false;
+
   @override
   void initState() {
     super.initState();
@@ -113,20 +115,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // for persisting previous state while editing
-    final Student? alreadyFilledStudent = Provider.of<StudentProvider>(
-      context,
-      listen: false,
-    ).student;
+    bool _isInitialized = false;
 
-    if (alreadyFilledStudent != null && !_canSubmit) {
-      _fullNameController.text = alreadyFilledStudent.fullName;
-      _emailController.text = alreadyFilledStudent.email;
-      _contactNumberController.text = alreadyFilledStudent.contactNumber;
-      _dobController.text = alreadyFilledStudent.dateOfBirth;
-      _selectedGender = alreadyFilledStudent.gender;
-      _pickedImage = File(alreadyFilledStudent.profilePath);
-      _canSubmit = true;
+    @override
+    void didChangeDependencies() {
+      super.didChangeDependencies();
+
+      if (_isInitialized) return;
+
+      final Student? alreadyFilledStudent = Provider.of<StudentProvider>(
+        context,
+        listen: false,
+      ).student;
+
+      if (alreadyFilledStudent != null) {
+        _fullNameController.text = alreadyFilledStudent.fullName;
+        _emailController.text = alreadyFilledStudent.email;
+        _contactNumberController.text = alreadyFilledStudent.contactNumber;
+        _dobController.text = alreadyFilledStudent.dateOfBirth;
+        _selectedGender = alreadyFilledStudent.gender;
+        _pickedImage = File(alreadyFilledStudent.profilePath);
+        _canSubmit = true;
+      }
+
+      _isInitialized = true;
     }
 
     return UnFocusOnTap(
