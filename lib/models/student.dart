@@ -2,7 +2,7 @@ class Student {
   final String fullName;
   final String email;
   final String contactNumber;
-  final DateTime dateOfBirth;
+  final String dateOfBirth;
   final String gender;
   final String profilePath;
 

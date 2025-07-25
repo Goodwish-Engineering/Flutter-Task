@@ -1,11 +1,14 @@
 import 'dart:io';
-import 'dart:nativewrappers/_internal/vm/lib/ffi_native_type_patch.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:task/components/my_text_field.dart';
 import 'package:task/components/unfocus_on_tap.dart';
 import 'package:task/constants/const_var.dart';
+import 'package:task/models/student.dart';
+import 'package:task/provider/student_provider.dart';
+import 'package:task/screens/display.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -20,6 +23,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late final TextEditingController _contactNumberController;
   late final TextEditingController _dobController;
   File? _pickedImage;
+  String? _selectedGender;
+  final List<String> _genders = ['Male', 'Female', 'Other'];
 
   bool _canSubmit = false;
 
@@ -67,6 +72,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         _fullNameController.text.isNotEmpty &&
         _contactNumberController.text.isNotEmpty &&
         _dobController.text.isNotEmpty &&
+        _selectedGender != null &&
         _pickedImage != null;
 
     if (_canSubmit != isValid) {
@@ -167,6 +173,44 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedGender,
+                      items: _genders
+                          .map(
+                            (String gender) => DropdownMenuItem<String>(
+                              value: gender,
+                              child: Text(gender),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (String? newGender) {
+                        setState(() {
+                          _selectedGender = newGender;
+                          _validateForm();
+                        });
+                      },
+                      decoration: InputDecoration(
+                        labelText: 'Gender',
+                        labelStyle: const TextStyle(color: Colors.black),
+                        contentPadding: const EdgeInsets.all(16),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Colors.black,
+                            width: 2,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      dropdownColor: Colors.white,
+                    ),
+                  ),
+                ),
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Visibility(
@@ -177,7 +221,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.lightGreen,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          final Student student = Student(
+                            fullName: _fullNameController.text.trim(),
+                            email: _emailController.text.trim(),
+                            contactNumber: _contactNumberController.text.trim(),
+                            dateOfBirth: _dobController.text.trim(),
+                            profilePath: _pickedImage!.path,
+                            gender: _selectedGender!,
+                          );
+
+                          Provider.of<StudentProvider>(
+                            context,
+                            listen: false,
+                          ).setStudent(student);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Student profile saved successfully!',
+                              ),
+                            ),
+                          );
+
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute<Widget>(
+                              builder: (BuildContext context) =>
+                                  const DisplayScreen(),
+                            ),
+                            (Route<dynamic> route) => false,
+                          );
+                        },
                         label: const Text(
                           'Submit',
                           style: TextStyle(color: Colors.white),
