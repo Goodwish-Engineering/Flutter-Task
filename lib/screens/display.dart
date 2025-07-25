@@ -38,22 +38,22 @@ class DisplayScreen extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            label: const Text('Cancel!'),
+            label: const Text('Cancel!', style: TextStyle(color: Colors.black)),
             icon: const Icon(Icons.cancel_outlined),
           ),
           ElevatedButton.icon(
             onPressed: () {
+              Provider.of<StudentProvider>(
+                context,
+                listen: false,
+              ).clearStudent();
+
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute<Widget>(
                   builder: (_) => const RegistrationScreen(),
                 ),
                 (Route<dynamic> route) => false,
               );
-
-              Provider.of<StudentProvider>(
-                context,
-                listen: false,
-              ).clearStudent();
             },
             label: const Text('Yes!', style: TextStyle(color: Colors.black)),
             icon: const Icon(Icons.check),
