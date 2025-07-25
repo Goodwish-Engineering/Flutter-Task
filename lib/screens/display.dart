@@ -43,19 +43,19 @@ class DisplayScreen extends StatelessWidget {
           ),
           ElevatedButton.icon(
             onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute<Widget>(
+                  builder: (_) => const RegistrationScreen(),
+                ),
+                (Route<dynamic> route) => false,
+              );
+
               Provider.of<StudentProvider>(
                 context,
                 listen: false,
               ).clearStudent();
-
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute<Widget>(
-                  builder: (BuildContext context) => const RegistrationScreen(),
-                ),
-                (Route<dynamic> route) => false,
-              );
             },
-            label: const Text('Yes!'),
+            label: const Text('Yes!', style: TextStyle(color: Colors.black)),
             icon: const Icon(Icons.check),
           ),
         ],

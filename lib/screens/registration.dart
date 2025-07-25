@@ -41,6 +41,38 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _isInitialized = false;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_isInitialized) {
+      final StudentProvider studentProvider = Provider.of<StudentProvider>(
+        context,
+        listen: false,
+      );
+      final Student? alreadyFilledStudent = studentProvider.student;
+
+      if (alreadyFilledStudent != null) {
+        _fullNameController.text = alreadyFilledStudent.fullName;
+        _emailController.text = alreadyFilledStudent.email;
+        _contactNumberController.text = alreadyFilledStudent.contactNumber;
+        _dobController.text = alreadyFilledStudent.dateOfBirth;
+        _selectedGender = alreadyFilledStudent.gender;
+        _pickedImage = File(alreadyFilledStudent.profilePath);
+      } else {
+        _fullNameController.clear();
+        _emailController.clear();
+        _contactNumberController.clear();
+        _dobController.clear();
+        _selectedGender = null;
+        _pickedImage = null;
+      }
+
+      _validateForm();
+      _isInitialized = true;
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     _fullNameController = TextEditingController();
@@ -115,32 +147,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool _isInitialized = false;
-
-    @override
-    void didChangeDependencies() {
-      super.didChangeDependencies();
-
-      if (_isInitialized) return;
-
-      final Student? alreadyFilledStudent = Provider.of<StudentProvider>(
-        context,
-        listen: false,
-      ).student;
-
-      if (alreadyFilledStudent != null) {
-        _fullNameController.text = alreadyFilledStudent.fullName;
-        _emailController.text = alreadyFilledStudent.email;
-        _contactNumberController.text = alreadyFilledStudent.contactNumber;
-        _dobController.text = alreadyFilledStudent.dateOfBirth;
-        _selectedGender = alreadyFilledStudent.gender;
-        _pickedImage = File(alreadyFilledStudent.profilePath);
-        _canSubmit = true;
-      }
-
-      _isInitialized = true;
-    }
-
     return UnFocusOnTap(
       child: SafeArea(
         top: false,

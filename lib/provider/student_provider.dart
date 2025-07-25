@@ -21,8 +21,8 @@ class StudentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearStudent() {
-    studentBox.clear();
+  void clearStudent() async {
+    await studentBox.clear();
     notifyListeners();
   }
 }
