@@ -28,6 +28,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   bool _canSubmit = false;
 
+  bool _isFullNameValid = false;
+  bool _isEmailValid = false;
+  bool _isContactValid = false;
+  bool _isDobValid = false;
+  bool _isGenderValid = false;
+  bool _isImagePicked = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -67,19 +74,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   void _validateForm() {
-    final bool isValid =
-        EmailValidator.validate(_emailController.text) &&
-        _fullNameController.text.isNotEmpty &&
-        _contactNumberController.text.isNotEmpty &&
-        _dobController.text.isNotEmpty &&
-        _selectedGender != null &&
-        _pickedImage != null;
+    setState(() {
+      _isFullNameValid = _fullNameController.text.trim().isNotEmpty;
+      _isEmailValid = EmailValidator.validate(_emailController.text.trim());
+      _isContactValid = _contactNumberController.text.trim().isNotEmpty;
+      _isDobValid = _dobController.text.trim().isNotEmpty;
+      _isGenderValid = _selectedGender != null;
+      _isImagePicked = _pickedImage != null;
 
-    if (_canSubmit != isValid) {
-      setState(() {
-        _canSubmit = isValid;
-      });
-    }
+      _canSubmit =
+          _isFullNameValid &&
+          _isEmailValid &&
+          _isContactValid &&
+          _isDobValid &&
+          _isGenderValid &&
+          _isImagePicked;
+    });
   }
 
   @override
@@ -102,6 +112,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
     return UnFocusOnTap(
       child: SafeArea(
+        top: false,
         bottom: true,
         child: Scaffold(
           backgroundColor: bgColor,
@@ -142,21 +153,62 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                   ),
+                  if (!_isImagePicked)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 8),
+                      child: Text(
+                        'Please select a profile image.',
+                        style: TextStyle(color: Colors.red, fontSize: 12),
+                      ),
+                    ),
                   MyTextField(
                     controller: _fullNameController,
                     hintText: 'Full Name',
                     textInputType: TextInputType.text,
                   ),
+                  if (!_isFullNameValid)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, top: 4),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Full name cannot be empty.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    ),
                   MyTextField(
                     controller: _emailController,
                     hintText: 'Email',
                     textInputType: TextInputType.emailAddress,
                   ),
+                  if (!_isEmailValid)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, top: 4),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Enter a valid email.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    ),
                   MyTextField(
                     controller: _contactNumberController,
                     hintText: 'Contact Number',
                     textInputType: TextInputType.phone,
                   ),
+                  if (!_isContactValid)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, top: 4),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Enter a valid Contact Number.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: TextField(
@@ -194,6 +246,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                   ),
+                  if (!_isDobValid)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, top: 4),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Enter a valid Date Of Birth.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: SizedBox(
@@ -232,54 +295,61 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                   ),
+                  if (!_isGenderValid)
+                    const Padding(
+                      padding: EdgeInsets.only(left: 20, top: 4),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Please select a gender.',
+                          style: TextStyle(color: Colors.red, fontSize: 12),
+                        ),
+                      ),
+                    ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Align(
                       alignment: Alignment.bottomRight,
-                      child: Visibility(
-                        visible: _canSubmit,
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.lightGreen,
-                          ),
-                          onPressed: () {
-                            final Student student = Student(
-                              fullName: _fullNameController.text.trim(),
-                              email: _emailController.text.trim(),
-                              contactNumber: _contactNumberController.text
-                                  .trim(),
-                              dateOfBirth: _dobController.text.trim(),
-                              profilePath: _pickedImage!.path,
-                              gender: _selectedGender!,
-                            );
-
-                            Provider.of<StudentProvider>(
-                              context,
-                              listen: false,
-                            ).setStudent(student);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Student profile saved successfully!',
-                                ),
-                              ),
-                            );
-
-                            Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute<Widget>(
-                                builder: (BuildContext context) =>
-                                    const DisplayScreen(),
-                              ),
-                              (Route<dynamic> route) => false,
-                            );
-                          },
-                          label: const Text(
-                            'Submit',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          icon: const Icon(Icons.check, color: Colors.white),
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.lightGreen,
                         ),
+                        onPressed: () {
+                          final Student student = Student(
+                            fullName: _fullNameController.text.trim(),
+                            email: _emailController.text.trim(),
+                            contactNumber: _contactNumberController.text.trim(),
+                            dateOfBirth: _dobController.text.trim(),
+                            profilePath: _pickedImage!.path,
+                            gender: _selectedGender!,
+                          );
+
+                          Provider.of<StudentProvider>(
+                            context,
+                            listen: false,
+                          ).setStudent(student);
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Student profile saved successfully!',
+                              ),
+                            ),
+                          );
+
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute<Widget>(
+                              builder: (BuildContext context) =>
+                                  const DisplayScreen(),
+                            ),
+                            (Route<dynamic> route) => false,
+                          );
+                        },
+                        label: const Text(
+                          'Submit',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        icon: const Icon(Icons.check, color: Colors.white),
                       ),
                     ),
                   ),

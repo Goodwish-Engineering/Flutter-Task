@@ -68,9 +68,10 @@ class DisplayScreen extends StatelessWidget {
     if (student == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    
+
     return UnFocusOnTap(
       child: SafeArea(
+        top: false,
         child: Scaffold(
           backgroundColor: bgColor,
           appBar: AppBar(
