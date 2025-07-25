@@ -24,7 +24,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   late final TextEditingController _dobController;
   File? _pickedImage;
   String? _selectedGender;
-  final List<String> _genders = ['Male', 'Female', 'Other'];
+  final List<String> _genders = <String>['Male', 'Female', 'Other'];
 
   bool _canSubmit = false;
 
@@ -84,121 +84,106 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return UnFocusOnTap(
-      child: Scaffold(
-        backgroundColor: bgColor,
-        appBar: AppBar(
-          title: const Text('Register', style: TextStyle(color: Colors.black)),
-          centerTitle: true,
-          backgroundColor: appBarColor,
-        ),
-        body: SingleChildScrollView(
-          child: Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                const SizedBox(height: 30),
-                ClipOval(
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      splashColor: Colors.white30,
-                      onTap: _pickImage,
-                      child: CircleAvatar(
-                        radius: 80,
-                        backgroundColor: appBarColor,
-                        backgroundImage: _pickedImage != null
-                            ? FileImage(_pickedImage!)
-                            : null,
-                        child: _pickedImage == null
-                            ? const Icon(
-                                Icons.camera_alt,
-                                size: 40,
-                                color: Colors.grey,
-                              )
-                            : null,
-                      ),
-                    ),
-                  ),
-                ),
-                MyTextField(
-                  controller: _fullNameController,
-                  hintText: 'Full Name',
-                  textInputType: TextInputType.text,
-                ),
-                MyTextField(
-                  controller: _emailController,
-                  hintText: 'Email',
-                  textInputType: TextInputType.emailAddress,
-                ),
-                MyTextField(
-                  controller: _contactNumberController,
-                  hintText: 'Contact Number',
-                  textInputType: TextInputType.phone,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: TextField(
-                    controller: _dobController,
-                    autocorrect: false,
-                    onTap: () async {
-                      DateTime? pickedDate = await showDatePicker(
-                        context: context,
-                        firstDate: DateTime.now(),
-                        lastDate: DateTime(2040),
-                      );
+    // for persisting the state while editing
+    final Student? alreadyFilledStudent = Provider.of<StudentProvider>(
+      context,
+      listen: false,
+    ).student;
 
-                      if (pickedDate != null) {
-                        _dobController.text =
-                            "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
-                      }
-                    },
-                    cursorColor: Colors.black,
-                    decoration: InputDecoration(
-                      labelText: 'Date-Of-Birth',
-                      labelStyle: const TextStyle(color: Colors.black),
-                      hintText: 'Enter your Date Of Birth',
-                      contentPadding: const EdgeInsets.all(16),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusColor: Colors.black,
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Colors.black,
-                          width: 2,
+    if (alreadyFilledStudent != null) {
+      _fullNameController.text = alreadyFilledStudent.fullName;
+      _emailController.text = alreadyFilledStudent.email;
+      _contactNumberController.text = alreadyFilledStudent.contactNumber;
+      _dobController.text = alreadyFilledStudent.dateOfBirth;
+      _selectedGender = alreadyFilledStudent.gender;
+      _pickedImage = File(alreadyFilledStudent.profilePath);
+      _canSubmit = true;
+    }
+
+    return UnFocusOnTap(
+      child: SafeArea(
+        bottom: true,
+        child: Scaffold(
+          backgroundColor: bgColor,
+          appBar: AppBar(
+            title: const Text(
+              'Register',
+              style: TextStyle(color: Colors.black),
+            ),
+            centerTitle: true,
+            backgroundColor: appBarColor,
+          ),
+          body: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  const SizedBox(height: 30),
+                  ClipOval(
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        splashColor: Colors.white30,
+                        onTap: _pickImage,
+                        child: CircleAvatar(
+                          radius: 80,
+                          backgroundColor: appBarColor,
+                          backgroundImage: _pickedImage != null
+                              ? FileImage(_pickedImage!)
+                              : null,
+                          child: _pickedImage == null
+                              ? const Icon(
+                                  Icons.camera_alt,
+                                  size: 40,
+                                  color: Colors.grey,
+                                )
+                              : null,
                         ),
-                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedGender,
-                      items: _genders
-                          .map(
-                            (String gender) => DropdownMenuItem<String>(
-                              value: gender,
-                              child: Text(gender),
-                            ),
-                          )
-                          .toList(),
-                      onChanged: (String? newGender) {
-                        setState(() {
-                          _selectedGender = newGender;
-                          _validateForm();
-                        });
+                  MyTextField(
+                    controller: _fullNameController,
+                    hintText: 'Full Name',
+                    textInputType: TextInputType.text,
+                  ),
+                  MyTextField(
+                    controller: _emailController,
+                    hintText: 'Email',
+                    textInputType: TextInputType.emailAddress,
+                  ),
+                  MyTextField(
+                    controller: _contactNumberController,
+                    hintText: 'Contact Number',
+                    textInputType: TextInputType.phone,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: TextField(
+                      controller: _dobController,
+                      autocorrect: false,
+                      onTap: () async {
+                        DateTime? pickedDate = await showDatePicker(
+                          context: context,
+                          firstDate: DateTime.now(),
+                          lastDate: DateTime(2040),
+                        );
+
+                        if (pickedDate != null) {
+                          _dobController.text =
+                              "${pickedDate.year}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.day.toString().padLeft(2, '0')}";
+                        }
                       },
+                      cursorColor: Colors.black,
                       decoration: InputDecoration(
-                        labelText: 'Gender',
+                        labelText: 'Date-Of-Birth',
                         labelStyle: const TextStyle(color: Colors.black),
+                        hintText: 'Enter your Date Of Birth',
                         contentPadding: const EdgeInsets.all(16),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        focusColor: Colors.black,
                         focusedBorder: OutlineInputBorder(
                           borderSide: const BorderSide(
                             color: Colors.black,
@@ -207,61 +192,99 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      dropdownColor: Colors.white,
                     ),
                   ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Visibility(
-                    visible: _canSubmit,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.lightGreen,
-                        ),
-                        onPressed: () {
-                          final Student student = Student(
-                            fullName: _fullNameController.text.trim(),
-                            email: _emailController.text.trim(),
-                            contactNumber: _contactNumberController.text.trim(),
-                            dateOfBirth: _dobController.text.trim(),
-                            profilePath: _pickedImage!.path,
-                            gender: _selectedGender!,
-                          );
-
-                          Provider.of<StudentProvider>(
-                            context,
-                            listen: false,
-                          ).setStudent(student);
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Student profile saved successfully!',
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                      child: DropdownButtonFormField<String>(
+                        value: _selectedGender,
+                        items: _genders
+                            .map(
+                              (String gender) => DropdownMenuItem<String>(
+                                value: gender,
+                                child: Text(gender),
                               ),
-                            ),
-                          );
-
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute<Widget>(
-                              builder: (BuildContext context) =>
-                                  const DisplayScreen(),
-                            ),
-                            (Route<dynamic> route) => false,
-                          );
+                            )
+                            .toList(),
+                        onChanged: (String? newGender) {
+                          setState(() {
+                            _selectedGender = newGender;
+                            _validateForm();
+                          });
                         },
-                        label: const Text(
-                          'Submit',
-                          style: TextStyle(color: Colors.white),
+                        decoration: InputDecoration(
+                          labelText: 'Gender',
+                          labelStyle: const TextStyle(color: Colors.black),
+                          contentPadding: const EdgeInsets.all(16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
-                        icon: const Icon(Icons.check, color: Colors.white),
+                        dropdownColor: Colors.white,
                       ),
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: Visibility(
+                        visible: _canSubmit,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.lightGreen,
+                          ),
+                          onPressed: () {
+                            final Student student = Student(
+                              fullName: _fullNameController.text.trim(),
+                              email: _emailController.text.trim(),
+                              contactNumber: _contactNumberController.text
+                                  .trim(),
+                              dateOfBirth: _dobController.text.trim(),
+                              profilePath: _pickedImage!.path,
+                              gender: _selectedGender!,
+                            );
+
+                            Provider.of<StudentProvider>(
+                              context,
+                              listen: false,
+                            ).setStudent(student);
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Student profile saved successfully!',
+                                ),
+                              ),
+                            );
+
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute<Widget>(
+                                builder: (BuildContext context) =>
+                                    const DisplayScreen(),
+                              ),
+                              (Route<dynamic> route) => false,
+                            );
+                          },
+                          label: const Text(
+                            'Submit',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          icon: const Icon(Icons.check, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
