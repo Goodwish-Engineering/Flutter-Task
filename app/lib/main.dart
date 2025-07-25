@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Registration App',
-      theme: AppTheme.darkThemeMode,
+      theme: AppTheme.lightThemeMode,
       initialRoute: AppRoutes.REGISTER,
       routes: {
         AppRoutes.REGISTER: (context) => const RegisterPage(),

@@ -16,6 +16,6 @@ class Student {
     required this.contactNumber,
     required this.dob,
     required this.gender,
-    required this.profilePicture,
+    this.profilePicture,
   });
 }
