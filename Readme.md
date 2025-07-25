@@ -58,11 +58,7 @@ Use Provider or Bloc for state management
 Light/Dark theme customization (colors, fonts)
 
 ### 📦 Submission Instructions
-Fork this repository
-
-Complete the task and push your code
-
-Create a Pull Request with a clear and meaningful commit history
+Fork the repository, complete the task, and submit a Pull Request with clear and meaningful commit history.
 
 ### 📅 Deadline
 Submit the completed task within 2 days from the time of assignment.
