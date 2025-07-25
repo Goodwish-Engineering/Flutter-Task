@@ -28,16 +28,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   bool _canSubmit = false;
 
-  bool _isFullNameValid = false;
-  bool _isEmailValid = false;
-  bool _isContactValid = false;
-  bool _isDobValid = false;
-  bool _isGenderValid = false;
-  bool _isImagePicked = false;
+  // for dispaying error messages
+  bool _isFullNameTouched = false;
+  bool _isEmailTouched = false;
+  bool _isContactTouched = false;
+  bool _isDobTouched = false;
+  bool _isGenderTouched = false;
+  bool _isImageTouched = false;
+
+  bool _isPickingImage = false;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _fullNameController = TextEditingController();
     _emailController = TextEditingController();
@@ -52,7 +54,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _fullNameController.dispose();
     _emailController.dispose();
     _contactNumberController.dispose();
@@ -61,46 +62,64 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   }
 
   Future<void> _pickImage() async {
-    final ImagePicker _imagePicker = ImagePicker();
-    final XFile? _image = await _imagePicker.pickImage(
-      source: ImageSource.gallery,
-    );
+    if (_isPickingImage) return;
 
-    if (_image != null) {
+    setState(() {
+      _isPickingImage = true;
+      _isImageTouched = true;
+    });
+
+    try {
+      final ImagePicker imagePicker = ImagePicker();
+      final XFile? image = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
+
+      if (image != null) {
+        setState(() {
+          _pickedImage = File(image.path);
+        });
+      }
+    } catch (e) {
+      debugPrint('Image picker error: $e');
+    } finally {
       setState(() {
-        _pickedImage = File(_image.path);
+        _isPickingImage = false;
       });
+      _validateForm();
     }
   }
 
   void _validateForm() {
-    setState(() {
-      _isFullNameValid = _fullNameController.text.trim().isNotEmpty;
-      _isEmailValid = EmailValidator.validate(_emailController.text.trim());
-      _isContactValid = _contactNumberController.text.trim().isNotEmpty;
-      _isDobValid = _dobController.text.trim().isNotEmpty;
-      _isGenderValid = _selectedGender != null;
-      _isImagePicked = _pickedImage != null;
+    final bool isFullNameValid = _fullNameController.text.trim().isNotEmpty;
+    final bool isEmailValid = EmailValidator.validate(
+      _emailController.text.trim(),
+    );
+    final bool isContactValid = _contactNumberController.text.trim().isNotEmpty;
+    final bool isDobValid = _dobController.text.trim().isNotEmpty;
+    final bool isGenderValid = _selectedGender != null;
+    final bool isImagePicked = _pickedImage != null;
 
+    setState(() {
       _canSubmit =
-          _isFullNameValid &&
-          _isEmailValid &&
-          _isContactValid &&
-          _isDobValid &&
-          _isGenderValid &&
-          _isImagePicked;
+          isFullNameValid &&
+          isEmailValid &&
+          isContactValid &&
+          isDobValid &&
+          isGenderValid &&
+          isImagePicked;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    // for persisting the state while editing
+    // for persisting previous state while editing
     final Student? alreadyFilledStudent = Provider.of<StudentProvider>(
       context,
       listen: false,
     ).student;
 
-    if (alreadyFilledStudent != null) {
+    if (alreadyFilledStudent != null && !_canSubmit) {
       _fullNameController.text = alreadyFilledStudent.fullName;
       _emailController.text = alreadyFilledStudent.email;
       _contactNumberController.text = alreadyFilledStudent.contactNumber;
@@ -153,7 +172,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                   ),
-                  if (!_isImagePicked)
+                  if (!_isImageTouched && _pickedImage == null)
                     const Padding(
                       padding: EdgeInsets.only(top: 8),
                       child: Text(
@@ -165,8 +184,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     controller: _fullNameController,
                     hintText: 'Full Name',
                     textInputType: TextInputType.text,
+                    onTap: () {
+                      setState(() => _isFullNameTouched = true);
+                    },
                   ),
-                  if (!_isFullNameValid)
+                  if (_isFullNameTouched &&
+                      _fullNameController.text.trim().isEmpty)
                     const Padding(
                       padding: EdgeInsets.only(left: 20, top: 4),
                       child: Align(
@@ -181,8 +204,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     controller: _emailController,
                     hintText: 'Email',
                     textInputType: TextInputType.emailAddress,
+                    onTap: () {
+                      setState(() => _isEmailTouched = true);
+                    },
                   ),
-                  if (!_isEmailValid)
+                  if (_isEmailTouched &&
+                      !EmailValidator.validate(_emailController.text.trim()))
                     const Padding(
                       padding: EdgeInsets.only(left: 20, top: 4),
                       child: Align(
@@ -197,8 +224,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     controller: _contactNumberController,
                     hintText: 'Contact Number',
                     textInputType: TextInputType.phone,
+                    onTap: () {
+                      setState(() => _isContactTouched = true);
+                    },
                   ),
-                  if (!_isContactValid)
+                  if (_isContactTouched &&
+                      _contactNumberController.text.trim().isEmpty)
                     const Padding(
                       padding: EdgeInsets.only(left: 20, top: 4),
                       child: Align(
@@ -215,10 +246,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       controller: _dobController,
                       autocorrect: false,
                       onTap: () async {
+                        setState(() => _isDobTouched = true);
                         DateTime? pickedDate = await showDatePicker(
                           context: context,
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2040),
+                          firstDate: DateTime(1900),
+                          lastDate: DateTime.now(),
                         );
 
                         if (pickedDate != null) {
@@ -246,7 +278,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                   ),
-                  if (!_isDobValid)
+                  if (_isDobTouched && _dobController.text.trim().isEmpty)
                     const Padding(
                       padding: EdgeInsets.only(left: 20, top: 4),
                       child: Align(
@@ -273,6 +305,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         onChanged: (String? newGender) {
                           setState(() {
                             _selectedGender = newGender;
+                            _isGenderTouched = true;
                             _validateForm();
                           });
                         },
@@ -295,7 +328,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       ),
                     ),
                   ),
-                  if (!_isGenderValid)
+                  if (_isGenderTouched && _selectedGender == null)
                     const Padding(
                       padding: EdgeInsets.only(left: 20, top: 4),
                       child: Align(
@@ -314,37 +347,40 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.lightGreen,
                         ),
-                        onPressed: () {
-                          final Student student = Student(
-                            fullName: _fullNameController.text.trim(),
-                            email: _emailController.text.trim(),
-                            contactNumber: _contactNumberController.text.trim(),
-                            dateOfBirth: _dobController.text.trim(),
-                            profilePath: _pickedImage!.path,
-                            gender: _selectedGender!,
-                          );
+                        onPressed: _canSubmit
+                            ? () {
+                                final Student student = Student(
+                                  fullName: _fullNameController.text.trim(),
+                                  email: _emailController.text.trim(),
+                                  contactNumber: _contactNumberController.text
+                                      .trim(),
+                                  dateOfBirth: _dobController.text.trim(),
+                                  profilePath: _pickedImage!.path,
+                                  gender: _selectedGender!,
+                                );
 
-                          Provider.of<StudentProvider>(
-                            context,
-                            listen: false,
-                          ).setStudent(student);
+                                Provider.of<StudentProvider>(
+                                  context,
+                                  listen: false,
+                                ).setStudent(student);
 
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Student profile saved successfully!',
-                              ),
-                            ),
-                          );
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Student profile saved successfully!',
+                                    ),
+                                  ),
+                                );
 
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute<Widget>(
-                              builder: (BuildContext context) =>
-                                  const DisplayScreen(),
-                            ),
-                            (Route<dynamic> route) => false,
-                          );
-                        },
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute<Widget>(
+                                    builder: (BuildContext context) =>
+                                        const DisplayScreen(),
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                              }
+                            : null,
                         label: const Text(
                           'Submit',
                           style: TextStyle(color: Colors.white),

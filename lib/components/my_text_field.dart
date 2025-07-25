@@ -4,12 +4,14 @@ class MyTextField extends StatelessWidget {
   final TextEditingController controller;
   final String hintText;
   final TextInputType textInputType;
+  final VoidCallback onTap;
 
   const MyTextField({
     super.key,
     required this.controller,
     required this.hintText,
     required this.textInputType,
+    required this.onTap,
   });
 
   @override
@@ -17,6 +19,7 @@ class MyTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: TextField(
+        onTap: onTap,
         keyboardType: textInputType,
         controller: controller,
         autocorrect: false,
