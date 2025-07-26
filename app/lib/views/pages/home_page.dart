@@ -1,3 +1,4 @@
+import 'package:app/config/app_palette.dart';
 import 'package:app/config/app_routes.dart';
 import 'package:app/model/gender_type_enum.dart';
 import 'package:app/views/bloc/student_bloc.dart';
@@ -20,6 +21,17 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  ImageProvider _getGenderImage(Gender gender) {
+    switch (gender) {
+      case Gender.MALE:
+        return AssetImage('assets/images/man.jpg');
+      case Gender.FEMALE:
+        return AssetImage('assets/images/girl.jpeg');
+      default:
+        return AssetImage('assets/images/third.png');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<StudentBloc, StudentState>(
@@ -33,7 +45,7 @@ class HomePage extends StatelessWidget {
           if (state is StudentRegisterSuccessState) {
             final student = state.student;
             final genderIcon = _getGenderIcon(student.gender);
-
+            final genderImage = _getGenderImage(student.gender);
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.white,
@@ -54,12 +66,8 @@ class HomePage extends StatelessWidget {
                             radius: 60,
                             backgroundImage:
                                 state.student.profilePicture != null
-                                    ? FileImage((state.student.profilePicture!))
-                                    : null,
-                            child:
-                                state.student.profilePicture == null
-                                    ? null // Shows nothing when no image
-                                    : null, // Could add a fallback widget here if needed
+                                    ? FileImage(state.student.profilePicture!)
+                                    : _getGenderImage(student.gender),
                           ),
                           SizedBox(height: 16),
                           Text(
