@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 void main() {
   runApp(MyApp());
@@ -36,7 +38,19 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
 
 // Variables for Dropdown and Image
   String? _selectedGender;
-  String? _profileImagePath; // We'll use image picker later
+  String? _profileImagePath;
+
+  File? _profileImage;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        _profileImage = File(image.path);
+      });
+    }
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +67,28 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                 Text(
                   'Student Registration Form',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+
+                Center(
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _profileImage != null
+                            ? FileImage(_profileImage!)
+                            : null,
+                        child: _profileImage == null
+                            ? Icon(Icons.person, size: 50)
+                            : null,
+                      ),
+                      TextButton.icon(
+                        onPressed: _pickImage,
+                        icon: Icon(Icons.photo),
+                        label: Text('Upload Profile Picture'),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 16),
 
@@ -110,7 +146,7 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                 ),
                 // Date of Birth Field
                 SizedBox(height: 16),
-                TextField(
+                TextFormField(
                   controller: _dobController,
                   readOnly: true,
                   decoration: InputDecoration(
@@ -132,6 +168,12 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                       });
                     }
                   },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select your date of birth';
+                    }
+                    return null;
+                  },
                 ),
 
 // Gender Dropdown
@@ -142,28 +184,25 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                     labelText: 'Gender',
                     border: OutlineInputBorder(),
                   ),
-                  items: ['Male', 'Female', 'Other'].map((gender) {
-                    return DropdownMenuItem(
+                  items: ['Male', 'Female', 'Other'].map((String gender) {
+                    return DropdownMenuItem<String>(
                       value: gender,
                       child: Text(gender),
                     );
                   }).toList(),
-                  onChanged: (value) {
+                  onChanged: (String? newValue) {
                     setState(() {
-                      _selectedGender = value!;
+                      _selectedGender = newValue;
                     });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select your gender';
+                    }
+                    return null;
                   },
                 ),
 
-// Profile Picture Upload
-                SizedBox(height: 16),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    // We'll add image picker logic later
-                  },
-                  icon: Icon(Icons.photo),
-                  label: Text('Upload Profile Picture'),
-                ),
                 SizedBox(height: 24),
 
                 Center(
@@ -178,6 +217,12 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                         } else if (_selectedGender == null) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text('Please select gender')),
+                          );
+                        } else if (_profileImage == null) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content:
+                                    Text('Please upload a profile picture')),
                           );
                         } else {
                           // All fields are valid
