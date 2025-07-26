@@ -10,21 +10,43 @@
 
 ---
 
+## 📱 App Demo Video
+
+> **See the app in action!** Complete walkthrough of all features with smooth animations and interactions.
+
+<div align="center">
+
+### 🎬 Full App Walkthrough
+
+<video width="300" height="600" controls autoplay muted loop>
+  <source src="./samplevideo.mp4" type="video/mp4">
+  <p>Your browser doesn't support HTML5 video. <a href="./samplevideo.mp4">Download the video</a> instead.</p>
+</video>
+
+</div>
+
+
+---
+
 ## App Screenshots
 
 ### Registration Screen
-*Beautiful form with comprehensive validation*
+  
+   <img src="./screenshots/studentregistratoindarkmode.jpg" alt="registerscreen" height="300"/>
+
+  <img src="./screenshots/studentregistrationlightmode.jpg" alt="resgister screen" height="300"/> 
 
 ### Profile Display Screen  
-*Clean, modern profile view with animated elements*
+ <img src="./screenshots/profilescreendarkmode.jpg" alt="profile screen" height="300"/>
+   
+  <img src="./screenshots/profilescreenlightmode.jpg" alt="profile screen" height="300"/> 
 
-### Dark Theme Support
-*Seamless light/dark theme switching*
+### Edit student detail
 
-### International Phone Support
-*Country code selection with validation*
+ <img src="./screenshots/updateprofiledarkmode1.jpg" alt="update profile screen" height="300"/> 
 
----
+ <img src="./screenshots/updateprofilelightmode.jpg" alt="update profile screen" height="300"/>
+
 
 ##  Features
 
@@ -33,6 +55,11 @@
 - **Profile Management**: View, edit, and delete student profiles
 - **Data Persistence**: Local storage using SharedPreferences
 - **Theme Support**: Light/Dark theme with system preference detection
+
+
+### Animation On Screen Transistion(fade and slide in)
+implemented fade and slide in animation between screen transistion using animationcontroller.
+
 
 ### 📋 Form Fields & Validation
 - **Full Name**: Minimum 2 characters with real-time validation
@@ -44,6 +71,7 @@
 - **Date of Birth**: Date picker with age constraints (5-100 years)
 - **Gender**: Dropdown selection (Male, Female, Other)
 - **Profile Picture**: Camera/Gallery selection with image picker
+
 
 ### 🎨 UI/UX Excellence
 - **Material Design 3**: Modern, clean interface following Google's design guidelines
