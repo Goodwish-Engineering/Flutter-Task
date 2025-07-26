@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/student_provider.dart';
-import '../models/student_model.dart';
 import 'registration_page.dart';
 
 class ProfileDisplayPage extends StatelessWidget {
@@ -60,10 +59,11 @@ class ProfileDisplayPage extends StatelessWidget {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const StudentRegistrationPage(),
+                        builder: (context) =>
+                            const StudentRegistrationPage(isEditing: true),
                       ),
                     );
                   },

@@ -7,7 +7,12 @@ import '../models/student_model.dart';
 import 'profile_display.dart';
 
 class StudentRegistrationPage extends StatefulWidget {
-  const StudentRegistrationPage({super.key});
+  final bool isEditing;
+
+  const StudentRegistrationPage({
+    super.key,
+    this.isEditing = false,
+  });
 
   @override
   State<StudentRegistrationPage> createState() =>
@@ -27,15 +32,17 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   @override
   void initState() {
     super.initState();
-    // Load existing data if any
-    final student =
-        Provider.of<StudentProvider>(context, listen: false).student;
-    if (student.name != null) _nameController.text = student.name!;
-    if (student.email != null) _emailController.text = student.email!;
-    if (student.contact != null) _contactController.text = student.contact!;
-    if (student.dob != null) _dobController.text = student.dob!;
-    _selectedGender = student.gender;
-    _profileImage = student.profileImage;
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
+
+    if (widget.isEditing) {
+      _nameController.text = studentProvider.student.name ?? '';
+      _emailController.text = studentProvider.student.email ?? '';
+      _contactController.text = studentProvider.student.contact ?? '';
+      _dobController.text = studentProvider.student.dob ?? '';
+      _selectedGender = studentProvider.student.gender;
+      _profileImage = studentProvider.student.profileImage;
+    }
   }
 
   Future<void> _pickImage() async {
@@ -56,43 +63,55 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
       _selectedGender = null;
       _profileImage = null;
     });
-    Provider.of<StudentProvider>(context, listen: false).clearStudent();
   }
 
-  void _submitForm() {
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       if (_dobController.text.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please select date of birth')),
         );
-      } else if (_selectedGender == null) {
+        return;
+      }
+
+      if (_selectedGender == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please select gender')),
         );
-      } else if (_profileImage == null) {
+        return;
+      }
+
+      if (_profileImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please upload a profile picture')),
         );
-      } else {
-        // Save to provider
-        Provider.of<StudentProvider>(context, listen: false).updateStudent(
-          Student(
-            name: _nameController.text,
-            email: _emailController.text,
-            contact: _contactController.text,
-            dob: _dobController.text,
-            gender: _selectedGender,
-            profileImage: _profileImage,
-          ),
-        );
+        return;
+      }
 
+      Provider.of<StudentProvider>(context, listen: false).updateStudent(
+        Student(
+          name: _nameController.text,
+          email: _emailController.text,
+          contact: _contactController.text,
+          dob: _dobController.text,
+          gender: _selectedGender,
+          profileImage: _profileImage,
+        ),
+      );
+
+      if (widget.isEditing) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully!')),
+        );
+      } else {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => const ProfileDisplayPage(),
           ),
-        ).then((_) => _clearForm());
-
+        );
+        _clearForm();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration successful!')),
         );
@@ -122,29 +141,25 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Student Registration',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Center(
+                child: Text(
+                  'Student Registration',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple,
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
               Center(
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _profileImage != null
-                          ? FileImage(_profileImage!)
-                          : null,
-                      child: _profileImage == null
-                          ? const Icon(Icons.person, size: 50)
-                          : null,
-                    ),
-                    TextButton.icon(
-                      onPressed: _pickImage,
-                      icon: const Icon(Icons.photo),
-                      label: const Text('Upload Profile Picture'),
-                    ),
-                  ],
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundImage:
+                      _profileImage != null ? FileImage(_profileImage!) : null,
+                  child: _profileImage == null
+                      ? const Icon(Icons.person, size: 50)
+                      : null,
                 ),
               ),
               const SizedBox(height: 16),
@@ -212,7 +227,7 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                   if (pickedDate != null) {
                     setState(() {
                       _dobController.text =
-                          "${pickedDate.toLocal()}".split(' ')[0];
+                          "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
                     });
                   }
                 },
@@ -248,11 +263,19 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                   return null;
                 },
               ),
+              const SizedBox(height: 16),
+              Center(
+                child: TextButton.icon(
+                  onPressed: _pickImage,
+                  icon: const Icon(Icons.photo),
+                  label: const Text('Upload Profile Picture'),
+                ),
+              ),
               const SizedBox(height: 24),
               Center(
                 child: ElevatedButton(
                   onPressed: _submitForm,
-                  child: const Text('Submit'),
+                  child: Text(widget.isEditing ? 'Update Profile' : 'Submit'),
                 ),
               ),
             ],
