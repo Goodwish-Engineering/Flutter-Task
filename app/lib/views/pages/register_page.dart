@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app/config/app_palette.dart';
 import 'package:app/config/app_routes.dart';
 import 'package:app/model/gender_type_enum.dart';
@@ -29,6 +31,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   DateTime? selectedDate;
   Gender? selectedGender;
+  File? selectedImage;
 
   @override
   void initState() {
@@ -54,6 +57,7 @@ class _RegisterPageState extends State<RegisterPage> {
     selectedDate = student.dob;
     selectedGender = student.gender;
     dobController.text = formatDateTime(true, student.dob.toIso8601String());
+    selectedImage = student.profilePicture;
   }
 
   @override
@@ -123,7 +127,16 @@ class _RegisterPageState extends State<RegisterPage> {
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AddPhotoWidget(),
+                            AddPhotoWidget(
+                              initialImage: selectedImage,
+                              onImagePicked: (File? image) {
+                                setState(() {
+                                  selectedImage = image;
+                                });
+                                // Now you can use _selectedImage anywhere in your page
+                                print('Image path: ${selectedImage?.path}');
+                              },
+                            ),
                             SizedBox(height: 20),
 
                             AuthField(
@@ -218,6 +231,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       dob:
                                           selectedDate!, // Use selectedDate (DateTime)
                                       gender: selectedGender!,
+                                      profilePicture: selectedImage,
                                     );
 
                                     context.read<StudentBloc>().add(

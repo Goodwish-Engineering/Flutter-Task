@@ -50,7 +50,17 @@ class HomePage extends StatelessWidget {
                     Center(
                       child: Column(
                         children: [
-                          CircleAvatar(radius: 60),
+                          CircleAvatar(
+                            radius: 60,
+                            backgroundImage:
+                                state.student.profilePicture != null
+                                    ? FileImage((state.student.profilePicture!))
+                                    : null,
+                            child:
+                                state.student.profilePicture == null
+                                    ? null // Shows nothing when no image
+                                    : null, // Could add a fallback widget here if needed
+                          ),
                           SizedBox(height: 16),
                           Text(
                             'Student Detail',
