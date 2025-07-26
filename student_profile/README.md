@@ -1,16 +1,23 @@
-# student_profile
+# 🎓 Student Profile App
 
-A new Flutter project.
+A simple Flutter application that allows users to create, update, and manage student profile information locally.
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+-  Create and view a student profile
+-  Upload and display profile images from local storage
+-  Edit profile details (name, email, contact number, date of birth, gender)
+-  Delete profile with confirmation dialog
+-  Show success message on update
+-  Clean and responsive UI with Cards and styling
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠 Tech Stack
+
+- **Flutter**
+- **Dart**
+- Local file/image handling
+- Form validation & state management
