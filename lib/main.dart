@@ -55,7 +55,16 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Student Registration'),
+        backgroundColor: Colors.deepPurple, // Custom color
+        centerTitle: true, // Optional: center the title
+        title: Text(
+          'Student Profile App',
+          style: TextStyle(
+            fontSize: 24, // Make title bigger
+            fontWeight: FontWeight.bold, // Make title bold
+            color: Colors.white, // Set title color
+          ),
+        ),
       ),
       body: SingleChildScrollView(
           padding: EdgeInsets.all(16),
@@ -65,7 +74,7 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Student Registration Form',
+                  'Student Registration',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 16),
@@ -225,9 +234,19 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
                                     Text('Please upload a profile picture')),
                           );
                         } else {
-                          // All fields are valid
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('Registration successful!')),
+                          // All fields valid: Navigate to display screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfileDisplayPage(
+                                name: _nameController.text,
+                                email: _emailController.text,
+                                gender: _selectedGender!,
+                                dob: _dobController.text,
+                                contact: _contactController.text,
+                                profileImage: _profileImage,
+                              ),
+                            ),
                           );
                         }
                       }
@@ -238,6 +257,76 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
               ],
             ),
           )),
+    );
+  }
+}
+
+class ProfileDisplayPage extends StatelessWidget {
+  final String name;
+  final String email;
+  final String contact;
+  final String dob;
+  final String gender;
+  final File? profileImage;
+
+  const ProfileDisplayPage({
+    Key? key,
+    required this.name,
+    required this.email,
+    required this.gender,
+    required this.dob,
+    required this.contact,
+    this.profileImage,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Profile Display',
+          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                    profileImage != null ? FileImage(profileImage!) : null,
+                child:
+                    profileImage == null ? Icon(Icons.person, size: 50) : null,
+              ),
+            ),
+            SizedBox(height: 20),
+            infoRow('Name:', name),
+            infoRow('Email:', email),
+            infoRow('Contact:', contact),
+            infoRow('Date of Birth:', dob),
+            infoRow('Gender:', gender),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        children: [
+          Text(
+            label,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(width: 10),
+          Flexible(child: Text(value)),
+        ],
+      ),
     );
   }
 }
