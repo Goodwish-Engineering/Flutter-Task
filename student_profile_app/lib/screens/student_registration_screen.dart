@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_profile_app/models/student.dart';
 import 'package:student_profile_app/provider/student_provider.dart';
+import 'package:student_profile_app/screens/student_profile_screen.dart';
 
 class StudentRegistrationScreen extends StatefulWidget {
   const StudentRegistrationScreen({super.key});
@@ -29,6 +30,53 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
   void initState() {
     super.initState();
     _loadStudentData();
+  }
+
+  void _submitForm() {
+    if (!_formKey.currentState!.validate()) return;
+    if (_selectedDate == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Please select the date of birth")),
+      );
+      return;
+    }
+    if (_profileImage == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Pick the image from the gallery")),
+      );
+      return;
+    }
+
+    final student = Student(
+      fullname: _nameController.text,
+      email: _emailController.text,
+      contactNumber: _contactController.text,
+      dateOfBirth: _selectedDate!,
+      gender: _selectedGender,
+      profilePicturePath: _profileImage?.path,
+    );
+
+    final studentProvider = Provider.of<StudentProvider>(
+      context,
+      listen: false,
+    );
+
+    if (_isEditing) {
+      studentProvider.updateStudent(student);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Student Profile Updated Successfully")),
+      );
+    } else {
+      studentProvider.saveStudent(student);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Student Profile Saved Successfully")),
+      );
+    }
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const StudentProfileScreen()),
+    );
   }
 
   void _loadStudentData() {
@@ -266,7 +314,7 @@ class _StudentRegistrationScreenState extends State<StudentRegistrationScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => {},
+                    onPressed: () => _submitForm(),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
