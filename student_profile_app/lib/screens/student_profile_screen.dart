@@ -126,7 +126,7 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
                 const SizedBox(width: 16),
                 Expanded(
                   child: ElevatedButton.icon(
-                    onPressed: () => () {},
+                    onPressed: () => _showDeleteConfirmation(context),
                     icon: const Icon(Icons.delete),
                     label: const Text('Delete'),
                     style: ElevatedButton.styleFrom(
@@ -170,4 +170,37 @@ class _StudentProfileScreenState extends State<StudentProfileScreen> {
       ),
     );
   }
+}
+
+void _showDeleteConfirmation(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Are you sure you want to delete this profile?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Provider.of<StudentProvider>(
+                context,
+                listen: false,
+              ).deleteStudent();
+              Navigator.of(context).pop();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const StudentRegistrationScreen(),
+                ),
+              );
+            },
+            child: const Text('Delete'),
+          ),
+        ],
+      );
+    },
+  );
 }
