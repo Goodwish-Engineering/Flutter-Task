@@ -151,7 +151,7 @@ To run this application on your local device, follow these steps:
 
 ---
 
-**Developed by:** [Dipankar Upd]  
+**Developed by:** Dipankar Raj Upadhyaya
 **Project Type:** Internship Task    
 
 *This project demonstrates proficiency in Flutter development, state management, form handling, and creating production-ready mobile applications.*
