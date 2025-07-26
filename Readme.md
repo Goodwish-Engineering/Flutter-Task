@@ -10,18 +10,13 @@
 
 ---
 
-## 📱 App Demo Video
+##  Download App sample Video
 
 <div align="center">
 
-
-<video width="300" height="600" controls autoplay muted loop>
-  <source src="./samplevideo.mp4" type="video/mp4">
-  <p>Your browser doesn't support HTML5 video. <a href="./samplevideo.mp4">Download the video</a> instead.</p>
-</video>
+https://github.com/niranjandahalofficial/studentprofileapp/blob/main/samplevideo.mp4
 
 </div>
-
 
 ---
 
