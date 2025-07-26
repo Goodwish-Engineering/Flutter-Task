@@ -1,2 +1,3 @@
 ## APP SCREENSHOTS
-![App Screenshot](assets/images/1.jpg)
+<img src="assets/images/1.jpg" alt="App Screenshot" width="300"/>
+
