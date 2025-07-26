@@ -30,75 +30,46 @@ class ProfileDetail extends StatelessWidget {
         ItemBox(),
         const SizedBox(width: 12),
 
-        // Text content - handle gender with inline icon differently
         Expanded(
-          child:
-              isGender && genderIcon != null
-                  ? Row(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          style: DefaultTextStyle.of(
-                            context,
-                          ).style.copyWith(fontSize: 20),
-                          children: [
-                            TextSpan(
-                              text: '$placeholder: ',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'Vintaface',
-                                letterSpacing: 3,
-                              ),
-                            ),
-                            TextSpan(
-                              text: formatDateTime(isDob, value),
-                              style: TextStyle(
-                                fontWeight: FontWeight.w500, // Semi-bold
-                                color: Colors.grey[800], // Slightly muted
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      genderIcon!,
-                    ],
-                  )
-                  : RichText(
-                    text: TextSpan(
-                      style: DefaultTextStyle.of(
-                        context,
-                      ).style.copyWith(fontSize: 20),
-                      children: [
-                        TextSpan(
-                          text: '$placeholder: ',
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontFamily: 'Vintaface',
-                            letterSpacing: 3,
-                          ),
-                        ),
-                        TextSpan(
-                          text: formatDateTime(isDob, value),
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500, // Semi-bold
-                            color: Colors.grey[800], // Slightly muted
-                          ),
-                        ),
-                      ],
-                    ),
+          child: Row(
+            children: [
+              Text(
+                '$placeholder: ',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontFamily: 'Vintaface',
+                  letterSpacing: 3,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              Expanded(
+                child: Text(
+                  isDob ? formatDateTime(true, value) : value,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.grey[800],
                   ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+
+              if (isGender && genderIcon != null) ...[
+                const SizedBox(width: 8),
+                genderIcon!,
+              ],
+            ],
+          ),
         ),
 
-        // Copy icon (if enabled)
         if (canCopy) ...[
           const SizedBox(width: 8),
           IconButton(
             onPressed: () => copyToClipboard(context, placeholder, value),
             icon: const Icon(Icons.copy, size: 20),
             padding: EdgeInsets.zero,
-            constraints: const BoxConstraints(),
-            tooltip: 'Copy $placeholder',
           ),
         ],
       ],
