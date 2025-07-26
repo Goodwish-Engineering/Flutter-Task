@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:student_profile/register.dart';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
@@ -41,13 +42,15 @@ class _DashboardState extends State<Dashboard> {
           ),
           SizedBox(height: 20),
           ElevatedButton(
-            onPressed: (){}, 
+            onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Register()));
+            }, 
             style: ElevatedButton.styleFrom(
               elevation: 5,
               backgroundColor: Color.fromARGB(255,45,69,134),
-              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             child: Text(
