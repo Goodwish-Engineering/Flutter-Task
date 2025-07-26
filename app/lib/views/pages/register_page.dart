@@ -5,6 +5,7 @@ import 'package:app/config/app_routes.dart';
 import 'package:app/model/gender_type_enum.dart';
 import 'package:app/model/student.dart';
 import 'package:app/utils/format_date_time.dart';
+import 'package:app/utils/show_snackbar.dart';
 import 'package:app/views/bloc/student_bloc.dart';
 import 'package:app/views/widgets/add_photo_widget.dart';
 import 'package:app/views/widgets/auth_fields.dart';
@@ -83,7 +84,10 @@ class _RegisterPageState extends State<RegisterPage> {
       child: BlocListener<StudentBloc, StudentState>(
         listener: (context, state) {
           if (state is StudentRegisterSuccessState) {
-            Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
+            showSnackbar(context, 'Student Registered Successfully!!!');
+            Future.delayed(Duration(seconds: 1), () {
+              Navigator.of(context).pushReplacementNamed(AppRoutes.HOME);
+            });
           }
         },
         child: Scaffold(
