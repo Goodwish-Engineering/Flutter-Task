@@ -1,4 +1,3 @@
-import 'package:app/config/app_palette.dart';
 import 'package:app/config/app_routes.dart';
 import 'package:app/model/gender_type_enum.dart';
 import 'package:app/views/bloc/student_bloc.dart';
@@ -45,7 +44,7 @@ class HomePage extends StatelessWidget {
           if (state is StudentRegisterSuccessState) {
             final student = state.student;
             final genderIcon = _getGenderIcon(student.gender);
-            final genderImage = _getGenderImage(student.gender);
+
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.white,

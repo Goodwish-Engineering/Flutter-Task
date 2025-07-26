@@ -43,22 +43,37 @@ class ProfileDetail extends StatelessWidget {
                 ),
               ),
 
-              Expanded(
-                child: Text(
-                  isDob ? formatDateTime(true, value) : value,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.grey[800],
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+              if (isGender) ...[
+                // Gender text and icon grouped together
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      value,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[800],
+                      ),
+                    ),
+                    const SizedBox(width: 4), // Small spacing
+                    if (genderIcon != null) genderIcon!,
+                  ],
                 ),
-              ),
-
-              if (isGender && genderIcon != null) ...[
-                const SizedBox(width: 8),
-                genderIcon!,
+              ] else ...[
+                // Regular text field for non-gender items
+                Expanded(
+                  child: Text(
+                    isDob ? formatDateTime(true, value) : value,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.grey[800],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                  ),
+                ),
               ],
             ],
           ),
