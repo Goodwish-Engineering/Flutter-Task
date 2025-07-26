@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:student_profile/components/my_textfield.dart';
@@ -7,41 +7,66 @@ import 'package:student_profile/dashboard.dart';
 import 'package:student_profile/helper/student_model.dart';
 import 'package:student_profile/helper/student_provider.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class EditProfile extends StatefulWidget {
+  final StudentModel student;
+  const EditProfile({super.key, required this.student});
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<EditProfile> createState() => _EditProfileState();
 }
 
-class _RegisterState extends State<Register> {
-  File? _selectedImage;
-  String? _imagePath;
+class _EditProfileState extends State<EditProfile> {
+  // setting the validation key
+  final _formKey = GlobalKey<FormState>();
+
+  // text editing controllers for the fields
+  late TextEditingController _fullNameController;
+  late TextEditingController _emailController;
+  late TextEditingController _contactNumberController;
+  late TextEditingController _dateOfBirthController;
   String? _selectedGender;
+  String? _profileImagePath;
 
-  // controllers
-  final TextEditingController _fullNameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _contactNumberController = TextEditingController();
-  final TextEditingController _dateOfBirthController = TextEditingController();
-
-  // form key
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // image picker function
-  Future<void> _pickImage() async {
-  final ImagePicker picker = ImagePicker();
-  final XFile? pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
-  if (pickedFile != null) {
-    setState(() {
-      _selectedImage = File(pickedFile.path);
-      _imagePath = pickedFile.path;
-    });
+  // initializing the controllers
+  void initState(){
+    super.initState();
+    _fullNameController = TextEditingController(text: widget.student.fullName);
+    _emailController = TextEditingController(text: widget.student.email);
+    _contactNumberController = TextEditingController(text: widget.student.contactNumber);
+    _dateOfBirthController = TextEditingController(text: widget.student.dateOfBirth);
+    _selectedGender = widget.student.gender;
+    _profileImagePath = widget.student.profileImagePath;
   }
-}
 
-// success message dialog
+  // function for the image picker 
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _profileImagePath = pickedFile.path;
+      });
+    }
+  }
+
+  // saving the profile
+  void _saveProfile(){
+    if (_formKey.currentState!.validate()) {
+      final updatedStudent = StudentModel(
+  
+        fullName: _fullNameController.text,
+        email: _emailController.text,
+        contactNumber: _contactNumberController.text,
+        dateOfBirth: _dateOfBirthController.text,
+        gender: _selectedGender ?? 'Not Specified',
+        profileImagePath: _profileImagePath ?? 'lib/images/default_pfp.jpeg',
+      );
+      Provider.of<StudentProvider>(context, listen: false)
+        .setStudent(updatedStudent);
+    Navigator.pop(context);
+    }
+  }
+
+  // success message dialog
 void _showSuccessDialog(){
   showDialog(
     context: context, 
@@ -55,7 +80,7 @@ void _showSuccessDialog(){
           alignment: Alignment.center,
         ),
         content: const Text(
-          'YAYY! Your student profile has been created successfully.',
+          'YAYY! Your student profile has been updated successfully.',
           style: TextStyle(
             fontSize: 18,
             color: Colors.black,
@@ -64,10 +89,8 @@ void _showSuccessDialog(){
           ),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => const Dashboard())
-              );
+            onPressed:() {
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const Dashboard()));
             },
             child: const Text(
               'Go to Dashboard',
@@ -85,7 +108,7 @@ void _showSuccessDialog(){
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
+     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
@@ -93,7 +116,7 @@ void _showSuccessDialog(){
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'Register',
+          'Dashboard',
           style: TextStyle(
             fontSize: 30,
             fontWeight: FontWeight.bold,
@@ -117,8 +140,8 @@ void _showSuccessDialog(){
                     child: CircleAvatar(
                       radius: 50,
                       backgroundImage: 
-                      _selectedImage != null ? FileImage(_selectedImage!) : null,
-                      child: _selectedImage == null
+                      _profileImagePath != null ? FileImage(File(_profileImagePath!)) : null,
+                      child: _profileImagePath == null
                           ? const Icon(
                             Icons.person,
                             size: 80,
@@ -259,28 +282,9 @@ void _showSuccessDialog(){
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                      // listening to the provider 
-                      Provider.of<StudentProvider>(context, listen: false).setStudent(
-                        StudentModel(
-                          fullName: _fullNameController.text, 
-                          email: _emailController.text, 
-                          contactNumber: _contactNumberController.text, 
-                          dateOfBirth: _dateOfBirthController.text, 
-                          gender: _selectedGender ?? 'Not specified', 
-                          profileImagePath: _imagePath ?? '',
-                        ),
-                      );
-                    // show success dialog
-                    _showSuccessDialog();
-                    // Process the data
-                    debugPrint('Full Name: ${_fullNameController.text}');
-                    debugPrint('Email: ${_emailController.text}');
-                  }
-                },
+                onPressed: _saveProfile,
                 child: Text(
-                  'Submit',
+                  'Save Changes',
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,

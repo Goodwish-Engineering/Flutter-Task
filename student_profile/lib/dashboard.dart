@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:student_profile/edit_profile.dart';
 import 'package:student_profile/helper/student_model.dart';
 import 'package:student_profile/helper/student_provider.dart';
 import 'package:student_profile/register.dart';
@@ -161,28 +162,36 @@ class _DashboardState extends State<Dashboard> {
               ),
         
               // edit profile button
-              const SizedBox(height: 10),
-              GestureDetector(
-                onTap: () {},
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Edit Profile',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white70,
+
+                 GestureDetector(
+                   onTap: () {
+                     // Navigate to edit profile page
+                     Navigator.push(
+                       context,
+                       MaterialPageRoute(
+                         builder: (context) => EditProfile(student: student),
+                       ),
+                     );
+                   },
+                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Edit Profile',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white70,
+                        ),
                       ),
-                    ),
-                    SizedBox(width: screenWidth * 0.01),
-                    Icon(
-                      Icons.edit,
-                      color: Colors.white70,
-                      size: 16,
-                    )
-                  ],
-                ),
-              ),
+                      SizedBox(width: screenWidth * 0.01),
+                      Icon(
+                        Icons.edit,
+                        color: Colors.white70,
+                        size: 16,
+                      )
+                    ],
+                                   ),
+                 ),
         
               // email
               SizedBox(height: screenHeight * 0.03),
@@ -347,8 +356,8 @@ class _DashboardState extends State<Dashboard> {
               )
             ],
           ),
+          ),
         ),
-        )
-    );
+        );
   }
 }
