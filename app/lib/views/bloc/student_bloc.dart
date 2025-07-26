@@ -14,5 +14,9 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     on<StudentRegisterEvent>((event, emit) {
       emit(StudentRegisterSuccessState(student: event.student));
     });
+
+    on<StudentEditRegistrationEvent>((event, emit) {
+      emit(StudentEditState(student: event.student));
+    });
   }
 }

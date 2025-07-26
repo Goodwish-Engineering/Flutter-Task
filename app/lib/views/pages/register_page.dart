@@ -39,11 +39,25 @@ class _RegisterPageState extends State<RegisterPage> {
     phoneController = TextEditingController();
     dobController = TextEditingController();
     formKey = GlobalKey<FormState>();
+
+    // Check if we're in edit mode and populate fields
+    final currentState = context.read<StudentBloc>().state;
+    if (currentState is StudentEditState) {
+      _populateFields(currentState.student);
+    }
+  }
+
+  void _populateFields(Student student) {
+    nameController.text = student.fullName;
+    emailController.text = student.email;
+    phoneController.text = student.contactNumber;
+    selectedDate = student.dob;
+    selectedGender = student.gender;
+    dobController.text = formatDateTime(true, student.dob.toIso8601String());
   }
 
   @override
   void dispose() {
-    // Clean up controllers to prevent memory leaks
     nameController.dispose();
     emailController.dispose();
     phoneController.dispose();
@@ -55,7 +69,6 @@ class _RegisterPageState extends State<RegisterPage> {
   void _onDateSelected(DateTime date) {
     setState(() {
       selectedDate = date;
-      // Update the controller text to show the formatted date
       dobController.text = formatDateTime(true, date.toIso8601String());
     });
   }

@@ -1,3 +1,4 @@
+import 'package:app/config/app_routes.dart';
 import 'package:app/model/gender_type_enum.dart';
 import 'package:app/views/bloc/student_bloc.dart';
 import 'package:app/views/widgets/profile_detail.dart';
@@ -21,105 +22,116 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<StudentBloc, StudentState>(
-      builder: (context, state) {
-        if (state is StudentRegisterSuccessState) {
-          final student = state.student;
-          final genderIcon = _getGenderIcon(student.gender);
+    return BlocListener<StudentBloc, StudentState>(
+      listener: (context, state) {
+        if (state is StudentEditState) {
+          Navigator.of(context).pushReplacementNamed(AppRoutes.REGISTER);
+        }
+      },
+      child: BlocBuilder<StudentBloc, StudentState>(
+        builder: (context, state) {
+          if (state is StudentRegisterSuccessState) {
+            final student = state.student;
+            final genderIcon = _getGenderIcon(student.gender);
 
-          return Scaffold(
-            appBar: AppBar(
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.white,
+                title: Text('Registered User'),
+                elevation: 0,
+              ),
               backgroundColor: Colors.white,
-              title: Text('Registered User'),
-              elevation: 0,
-            ),
-            backgroundColor: Colors.white,
-            body: Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header section with avatar and title
-                  Center(
-                    child: Column(
-                      children: [
-                        CircleAvatar(radius: 60),
-                        SizedBox(height: 16),
-                        Text(
-                          'Student Detail',
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.bold,
-                            fontFamily: 'Vintaface',
-                            letterSpacing: 8,
+              body: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header section with avatar and title
+                    Center(
+                      child: Column(
+                        children: [
+                          CircleAvatar(radius: 60),
+                          SizedBox(height: 16),
+                          Text(
+                            'Student Detail',
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Vintaface',
+                              letterSpacing: 8,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  SizedBox(height: 30),
-
-                  // Profile details
-                  ProfileDetail(placeholder: 'Name', value: student.fullName),
-                  SizedBox(height: 16),
-
-                  ProfileDetail(
-                    placeholder: 'Email',
-                    value: student.email,
-                    canCopy: true,
-                  ),
-                  SizedBox(height: 16),
-
-                  ProfileDetail(
-                    placeholder: 'Contact',
-                    value: student.contactNumber,
-                    canCopy: true,
-                  ),
-                  SizedBox(height: 16),
-
-                  ProfileDetail(
-                    placeholder: 'Gender',
-                    value: student.gender.displayName,
-                    isGender: true,
-                    genderIcon: genderIcon,
-                  ),
-                  SizedBox(height: 16),
-
-                  ProfileDetail(
-                    placeholder: 'DOB',
-                    value: student.dob.toIso8601String(),
-                    isDob: true,
-                  ),
-                  SizedBox(height: 16),
-
-                  Spacer(),
-
-                  Center(
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        'Edit Profile',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
+                        ],
                       ),
                     ),
-                  ),
-                ],
+
+                    SizedBox(height: 30),
+
+                    // Profile details
+                    ProfileDetail(placeholder: 'Name', value: student.fullName),
+                    SizedBox(height: 16),
+
+                    ProfileDetail(
+                      placeholder: 'Email',
+                      value: student.email,
+                      canCopy: true,
+                    ),
+                    SizedBox(height: 16),
+
+                    ProfileDetail(
+                      placeholder: 'Contact',
+                      value: student.contactNumber,
+                      canCopy: true,
+                    ),
+                    SizedBox(height: 16),
+
+                    ProfileDetail(
+                      placeholder: 'Gender',
+                      value: student.gender.displayName,
+                      isGender: true,
+                      genderIcon: genderIcon,
+                    ),
+                    SizedBox(height: 16),
+
+                    ProfileDetail(
+                      placeholder: 'DOB',
+                      value: student.dob.toIso8601String(),
+                      isDob: true,
+                    ),
+                    SizedBox(height: 16),
+
+                    Spacer(),
+
+                    Center(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          context.read<StudentBloc>().add(
+                            StudentEditRegistrationEvent(student: student),
+                          );
+                        },
+                        child: Text(
+                          'Edit Profile',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: Text(
+                'No student data available',
+                style: TextStyle(fontSize: 18, color: Colors.grey[600]),
               ),
             ),
           );
-        }
-
-        return Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: Text(
-              'No student data available',
-              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-            ),
-          ),
-        );
-      },
+        },
+      ),
     );
   }
 }

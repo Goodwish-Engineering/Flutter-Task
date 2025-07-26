@@ -10,3 +10,9 @@ final class StudentRegisterSuccessState extends StudentState {
 
   StudentRegisterSuccessState({required this.student});
 }
+
+final class StudentEditState extends StudentState {
+  final Student student;
+
+  StudentEditState({required this.student});
+}

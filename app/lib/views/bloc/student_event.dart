@@ -8,3 +8,9 @@ class StudentRegisterEvent extends StudentEvent {
 
   StudentRegisterEvent({required this.student});
 }
+
+class StudentEditRegistrationEvent extends StudentEvent {
+  final Student student;
+
+  StudentEditRegistrationEvent({required this.student});
+}
