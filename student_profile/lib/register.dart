@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:student_profile/components/my_textfield.dart';
+import 'package:student_profile/dashboard.dart';
+import 'package:student_profile/helper/student_model.dart';
+import 'package:student_profile/helper/student_provider.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -35,6 +39,49 @@ class _RegisterState extends State<Register> {
       _imagePath = pickedFile.path;
     });
   }
+}
+
+// success message dialog
+void _showSuccessDialog(){
+  showDialog(
+    context: context, 
+    builder: (BuildContext context){
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        title: Image.asset(
+          'lib/images/success.png',
+          width: 100,
+          height: 100,
+          fit: BoxFit.cover,
+          alignment: Alignment.center,
+        ),
+        content: const Text(
+          'YAYY! Your student profile has been created successfully.',
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.black,
+          ),
+          ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => const Dashboard())
+              );
+              Navigator.of(context).pop();
+            },
+            child: const Text(
+              'Go to Dashboard',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color.fromARGB(255, 0, 122, 255),
+              ),
+              ),
+          ),
+        ],
+      );
+    }
+    );
 }
 
   @override
@@ -210,9 +257,22 @@ class _RegisterState extends State<Register> {
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
+                      // listening to the provider 
+                      Provider.of<StudentProvider>(context, listen: false).setStudent(
+                        StudentModel(
+                          fullName: _fullNameController.text, 
+                          email: _emailController.text, 
+                          contactNumber: _contactNumberController.text, 
+                          dateOfBirth: _dateOfBirthController.text, 
+                          gender: _selectedGender!, 
+                          profileImagePath: _imagePath!
+                        ),
+                      );
+                    // show success dialog
+                    _showSuccessDialog();
                     // Process the data
-                    print('Full Name: ${_fullNameController.text}');
-                    print('Email: ${_emailController.text}');    
+                    debugPrint('Full Name: ${_fullNameController.text}');
+                    debugPrint('Email: ${_emailController.text}');
                   }
                 },
                 child: Text(
