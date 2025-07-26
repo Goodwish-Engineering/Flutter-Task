@@ -52,7 +52,6 @@ void _showSuccessDialog(){
           'lib/images/success.png',
           width: 100,
           height: 100,
-          fit: BoxFit.cover,
           alignment: Alignment.center,
         ),
         content: const Text(
@@ -61,6 +60,7 @@ void _showSuccessDialog(){
             fontSize: 18,
             color: Colors.black,
           ),
+          textAlign: TextAlign.center,
           ),
         actions: [
           TextButton(
@@ -68,7 +68,6 @@ void _showSuccessDialog(){
               Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => const Dashboard())
               );
-              Navigator.of(context).pop();
             },
             child: const Text(
               'Go to Dashboard',
@@ -86,6 +85,9 @@ void _showSuccessDialog(){
 
   @override
   Widget build(BuildContext context) {
+    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Color.fromARGB(255,105,140,226),
       appBar: AppBar(
@@ -105,9 +107,9 @@ void _showSuccessDialog(){
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 40),
-          
-              // Profile Pivture
+              SizedBox(height: screenHeight * 0.04),
+
+              // Profile Picture
               Column(
                 children: [
                   GestureDetector(
@@ -124,8 +126,10 @@ void _showSuccessDialog(){
                           ) : null
                     ),
                   ),
-                  const SizedBox(height: 5),
-                  const Text(
+
+                  // edit profile picture text
+                  SizedBox(height: screenHeight * 0.01,),
+                  Text(
                     'Select your Profile Picture',
                     style: TextStyle(
                       fontSize: 14,
@@ -136,7 +140,7 @@ void _showSuccessDialog(){
               ),
           
               // Full Name 
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.01),
               MyTextField(
                 controller: _fullNameController,
                 hint: 'Full Name',
@@ -144,7 +148,7 @@ void _showSuccessDialog(){
               ),
           
               // Email
-              const SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.01),
               MyTextField(
                 controller: _emailController,
                 hint: 'Email',
@@ -152,7 +156,7 @@ void _showSuccessDialog(){
               ),
           
               // Contact Number
-              const SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.01),
               MyTextField(
                 controller: _contactNumberController,
                 hint: 'Contact Number',
@@ -161,7 +165,7 @@ void _showSuccessDialog(){
               ),
           
               // Date of Birth
-              const SizedBox(height: 10),
+              SizedBox(height: screenHeight * 0.01),
               MyTextField(
                 controller: _dateOfBirthController,
                 hint: 'Date of Birth',
@@ -201,8 +205,8 @@ void _showSuccessDialog(){
       
               // Gender Selection
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                padding: EdgeInsets.symmetric(horizontal: 30),
+                margin: EdgeInsets.symmetric(horizontal: screenWidth * 0.1, vertical: screenHeight * 0.01),
+                padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.05),
                 child: DropdownButtonFormField<String>(
                   hint: Text(
                     'Select Gender',
@@ -264,8 +268,8 @@ void _showSuccessDialog(){
                           email: _emailController.text, 
                           contactNumber: _contactNumberController.text, 
                           dateOfBirth: _dateOfBirthController.text, 
-                          gender: _selectedGender!, 
-                          profileImagePath: _imagePath!
+                          gender: _selectedGender ?? 'Not specified', 
+                          profileImagePath: _imagePath ?? '',
                         ),
                       );
                     // show success dialog
