@@ -1,11 +1,18 @@
 import 'package:app/config/app_routes.dart';
 import 'package:app/config/themes.dart';
+import 'package:app/views/bloc/student_bloc.dart';
 import 'package:app/views/pages/home_page.dart';
 import 'package:app/views/pages/register_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiBlocProvider(
+      providers: [BlocProvider(create: (_) => StudentBloc())],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

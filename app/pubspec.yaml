@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   image_picker: ^1.1.2
   intl: ^0.20.2
+  flutter_bloc: ^9.1.1
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +80,10 @@ flutter:
     - family: Awesome
       fonts:
         - asset: assets/fonts/Awesome.ttf
+    
+    - family: Vintaface
+      fonts:
+        - asset: assets/fonts/Vintaface-Regular.otf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

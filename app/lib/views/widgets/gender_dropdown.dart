@@ -2,18 +2,18 @@ import 'package:app/config/app_palette.dart';
 import 'package:app/model/gender_type_enum.dart';
 import 'package:flutter/material.dart';
 
-extension GenderExtension on Gender {
-  String get displayName {
-    switch (this) {
-      case Gender.MALE:
-        return 'Male';
-      case Gender.FEMALE:
-        return 'Female';
-      case Gender.OTHERS:
-        return 'Other';
-    }
-  }
-}
+// extension GenderExtension on Gender {
+//   String get displayName {
+//     switch (this) {
+//       case Gender.MALE:
+//         return 'Male';
+//       case Gender.FEMALE:
+//         return 'Female';
+//       case Gender.OTHERS:
+//         return 'Other';
+//     }
+//   }
+// }
 
 class GenderDropdownField extends StatelessWidget {
   final Gender? value;
