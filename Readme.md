@@ -4,7 +4,7 @@
 
 ## Download APK
 
-[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://github.com/yourusername/students_profile_app/releases/latest)
+[![Download APK](https://img.shields.io/badge/Download-APK-green?style=for-the-badge&logo=android)](https://github.com/niranjandahalofficial/studentprofileapp/releases/download/versrion1.0/app-release.apk)
 
 *Click the badge above to download the latest APK from our releases page.*
 
@@ -102,7 +102,7 @@
 
 ---
 
-##  Scalability & Future Enhancements
+##  Scalability 
 
 ### Immediate Improvements
 - **Multi-language Support**: i18n implementation for global reach
