@@ -1,25 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'dart:io';
+import '../providers/student_provider.dart';
+import '../models/student_model.dart';
 import 'profile_display.dart';
 
 class StudentRegistrationPage extends StatefulWidget {
-  final String? initialName;
-  final String? initialEmail;
-  final String? initialContact;
-  final String? initialDob;
-  final String? initialGender;
-  final File? initialImage;
-
-  const StudentRegistrationPage({
-    super.key,
-    this.initialName,
-    this.initialEmail,
-    this.initialContact,
-    this.initialDob,
-    this.initialGender,
-    this.initialImage,
-  });
+  const StudentRegistrationPage({super.key});
 
   @override
   State<StudentRegistrationPage> createState() =>
@@ -39,15 +27,15 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
   @override
   void initState() {
     super.initState();
-    // Pre-fill fields if editing
-    if (widget.initialName != null) _nameController.text = widget.initialName!;
-    if (widget.initialEmail != null)
-      _emailController.text = widget.initialEmail!;
-    if (widget.initialContact != null)
-      _contactController.text = widget.initialContact!;
-    if (widget.initialDob != null) _dobController.text = widget.initialDob!;
-    if (widget.initialGender != null) _selectedGender = widget.initialGender;
-    if (widget.initialImage != null) _profileImage = widget.initialImage;
+    // Load existing data if any
+    final student =
+        Provider.of<StudentProvider>(context, listen: false).student;
+    if (student.name != null) _nameController.text = student.name!;
+    if (student.email != null) _emailController.text = student.email!;
+    if (student.contact != null) _contactController.text = student.contact!;
+    if (student.dob != null) _dobController.text = student.dob!;
+    _selectedGender = student.gender;
+    _profileImage = student.profileImage;
   }
 
   Future<void> _pickImage() async {
@@ -57,6 +45,18 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
         _profileImage = File(image.path);
       });
     }
+  }
+
+  void _clearForm() {
+    setState(() {
+      _nameController.clear();
+      _emailController.clear();
+      _contactController.clear();
+      _dobController.clear();
+      _selectedGender = null;
+      _profileImage = null;
+    });
+    Provider.of<StudentProvider>(context, listen: false).clearStudent();
   }
 
   void _submitForm() {
@@ -74,19 +74,25 @@ class _StudentRegistrationPageState extends State<StudentRegistrationPage> {
           const SnackBar(content: Text('Please upload a profile picture')),
         );
       } else {
+        // Save to provider
+        Provider.of<StudentProvider>(context, listen: false).updateStudent(
+          Student(
+            name: _nameController.text,
+            email: _emailController.text,
+            contact: _contactController.text,
+            dob: _dobController.text,
+            gender: _selectedGender,
+            profileImage: _profileImage,
+          ),
+        );
+
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProfileDisplayPage(
-              name: _nameController.text,
-              email: _emailController.text,
-              gender: _selectedGender!,
-              dob: _dobController.text,
-              contact: _contactController.text,
-              profileImage: _profileImage,
-            ),
+            builder: (context) => const ProfileDisplayPage(),
           ),
-        );
+        ).then((_) => _clearForm());
+
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Registration successful!')),
         );

@@ -1,52 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:provider/provider.dart';
+import '../providers/student_provider.dart';
+import '../models/student_model.dart';
 import 'registration_page.dart';
 
 class ProfileDisplayPage extends StatelessWidget {
-  final String name;
-  final String email;
-  final String contact;
-  final String dob;
-  final String gender;
-  final File? profileImage;
-
-  const ProfileDisplayPage({
-    super.key,
-    required this.name,
-    required this.email,
-    required this.gender,
-    required this.dob,
-    required this.contact,
-    this.profileImage,
-  });
-
-  void _confirmDelete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Delete Profile?'),
-        content: const Text('This cannot be undone.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.popUntil(ctx, (route) => route.isFirst);
-              ScaffoldMessenger.of(ctx).showSnackBar(
-                const SnackBar(content: Text('Profile deleted!')),
-              );
-            },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-  }
+  const ProfileDisplayPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final student = Provider.of<StudentProvider>(context).student;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepPurple,
@@ -64,22 +28,32 @@ class ProfileDisplayPage extends StatelessWidget {
         padding: const EdgeInsets.all(20.0),
         child: Column(
           children: [
+            const Text(
+              'Profile Display',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.deepPurple,
+              ),
+            ),
+            const SizedBox(height: 20),
             Center(
               child: CircleAvatar(
                 radius: 50,
-                backgroundImage:
-                    profileImage != null ? FileImage(profileImage!) : null,
-                child: profileImage == null
+                backgroundImage: student.profileImage != null
+                    ? FileImage(student.profileImage!)
+                    : null,
+                child: student.profileImage == null
                     ? const Icon(Icons.person, size: 50)
                     : null,
               ),
             ),
             const SizedBox(height: 20),
-            _infoRow('Name:', name),
-            _infoRow('Email:', email),
-            _infoRow('Contact:', contact),
-            _infoRow('Date of Birth:', dob),
-            _infoRow('Gender:', gender),
+            _infoRow('Name:', student.name ?? ''),
+            _infoRow('Email:', student.email ?? ''),
+            _infoRow('Contact:', student.contact ?? ''),
+            _infoRow('Date of Birth:', student.dob ?? ''),
+            _infoRow('Gender:', student.gender ?? ''),
             const SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -89,14 +63,7 @@ class ProfileDisplayPage extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => StudentRegistrationPage(
-                          initialName: name,
-                          initialEmail: email,
-                          initialContact: contact,
-                          initialDob: dob,
-                          initialGender: gender,
-                          initialImage: profileImage,
-                        ),
+                        builder: (context) => const StudentRegistrationPage(),
                       ),
                     );
                   },
@@ -110,6 +77,33 @@ class ProfileDisplayPage extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Delete Profile?'),
+        content: const Text('This cannot be undone.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Provider.of<StudentProvider>(context, listen: false)
+                  .clearStudent();
+              Navigator.popUntil(ctx, (route) => route.isFirst);
+              ScaffoldMessenger.of(ctx).showSnackBar(
+                const SnackBar(content: Text('Profile deleted!')),
+              );
+            },
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+          ),
+        ],
       ),
     );
   }

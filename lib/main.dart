@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'screens/registration_page.dart';
+import 'package:provider/provider.dart';
+import 'providers/student_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => StudentProvider()),
+      ],
+      child: const MyApp(),
+    ),
+  );
 }
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
