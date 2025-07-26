@@ -12,11 +12,8 @@
 
 ## 📱 App Demo Video
 
-> **See the app in action!** Complete walkthrough of all features with smooth animations and interactions.
-
 <div align="center">
 
-### 🎬 Full App Walkthrough
 
 <video width="300" height="600" controls autoplay muted loop>
   <source src="./samplevideo.mp4" type="video/mp4">
