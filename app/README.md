@@ -2,6 +2,23 @@
 
 A comprehensive Flutter application developed for an internship task, featuring student registration and profile management with clean UI and robust state management.
 
+## 📸 Screenshots
+
+### Registration Screen
+| Empty Form | Form Validation | Date Picker |
+|------------|----------------|-------------|
+| ![Registration Empty](screenshots/register.jpeg) | ![Form Validation](screenshots/validation.jpeg) | ![Date Picker](screenshots/date.jpeg) |
+
+### Profile Display Screen
+| Profile View | Edit Mode |
+|--------------|-----------|
+| ![Profile Display](screenshots/display.jpeg) | ![Edit Profile](screenshots/edit.jpeg) 
+
+### Image Selection & Features
+| Image Picker | Copy Feature | 
+|--------------|--------------|
+| ![Image Picker](screenshots/photo.jpeg) | ![Copy Feature](screenshots/copy.jpeg) | 
+
 ## 🚀 Getting Started
 
 To run this application on your local device, follow these steps:
@@ -37,7 +54,7 @@ To run this application on your local device, follow these steps:
   - Profile Picture upload from device gallery
 
 - **Smart Validations:**
-  - Required field validation for all inputs (except for profile picture)
+  - Required field validation for all inputs(excluding DP)
   - Email format validation using regex patterns
   - Contact number validation (Exact 10 digits)
   - Name validation (letters and spaces only, minimum 2 characters)
@@ -45,7 +62,7 @@ To run this application on your local device, follow these steps:
 
 - **User Experience:**
   - Clean, responsive UI design
-  - Success feedback upon registration (through snackbar)
+  - Success Scaffold message upon registration
   - Smooth navigation to profile display
 
 ### 👤 Screen 2: Profile Display
@@ -107,7 +124,7 @@ To run this application on your local device, follow these steps:
 - Gallery image selection
 - Gender-based default avatars
 - Profile picture persistence across edit sessions
-- Image quality optimization
+
 
 ### User Interaction
 - **Copy to Clipboard:** Email and contact number copying functionality
@@ -134,7 +151,7 @@ To run this application on your local device, follow these steps:
 
 ---
 
-**Developed by:** [Dipankar Upadhyaya]  
-**Project Type:** Internship Task  
+**Developed by:** [Dipankar Upd]  
+**Project Type:** Internship Task    
 
 *This project demonstrates proficiency in Flutter development, state management, form handling, and creating production-ready mobile applications.*
