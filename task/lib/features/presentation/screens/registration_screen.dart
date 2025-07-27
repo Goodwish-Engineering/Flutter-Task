@@ -1,8 +1,7 @@
- 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';  
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:task/core/cubit/theme_toggle_cubit.dart';
@@ -33,7 +32,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-     
+
     _loadStudentData();
   }
 
@@ -115,7 +114,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             color: Theme.of(context).cardColor.withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: Theme.of(context).primaryColor.withValues(alpha:  0.3),
+              color: Theme.of(context).primaryColor.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -125,8 +124,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               Icon(
                 Icons.wb_sunny,
                 size: 20,
-                color: themeState.themeMode == AppThemeMode.light 
-                    ? Theme.of(context).primaryColor 
+                color: themeState.themeMode == AppThemeMode.light
+                    ? Theme.of(context).primaryColor
                     : Colors.grey.withValues(alpha: 0.6),
               ),
               const SizedBox(width: 8),
@@ -142,8 +141,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               Icon(
                 Icons.nights_stay,
                 size: 20,
-                color: themeState.themeMode == AppThemeMode.dark 
-                    ? Theme.of(context).primaryColor 
+                color: themeState.themeMode == AppThemeMode.dark
+                    ? Theme.of(context).primaryColor
                     : Colors.grey.withValues(alpha: 0.6),
               ),
             ],
@@ -198,7 +197,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         const SizedBox(height: 8),
         Text(
           'Tap to upload profile picture',
-          
+
           style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
@@ -229,14 +228,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
           );
           Navigator.pushNamed(context, '/profile').then((_) {
-             
             _loadStudentData();
           });
         }
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Student Registration'),
+          title: Text(
+            'Student Registration',
+            style: TextStyle(fontSize: context.fontSizeNormal),
+          ),
           actions: [
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
@@ -245,7 +246,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ],
         ),
         body: Padding(
-          padding:   EdgeInsets.all(context.verticalPadding),
+          padding: EdgeInsets.all(context.verticalPadding),
           child: SingleChildScrollView(
             padding: EdgeInsets.all(context.horizontalPadding),
             child: Form(
@@ -263,7 +264,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
-
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -278,12 +278,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Email',
                       prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                     ),
                     keyboardType: TextInputType.emailAddress,
-                    
+
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your email';
@@ -302,7 +302,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Contact Number',
                       prefixIcon: Icon(Icons.phone),
-                        border: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                     ),
@@ -323,7 +323,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Date of Birth',
                       prefixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                     ),
@@ -342,7 +342,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     decoration: const InputDecoration(
                       labelText: 'Gender',
                       prefixIcon: Icon(Icons.person_outline),
-                        border: OutlineInputBorder(
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(8)),
                       ),
                     ),
@@ -373,7 +373,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         width: double.infinity,
                         height: 50,
                         child: ElevatedButton(
-                          onPressed: state is StudentLoading ? null : _submitForm,
+                          onPressed: state is StudentLoading
+                              ? null
+                              : _submitForm,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Theme.of(context).primaryColor,
                             foregroundColor: Colors.white,
